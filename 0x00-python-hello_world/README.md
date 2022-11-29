@@ -1,1 +1,1 @@
-All task
+Shell script that runs a Python script.
