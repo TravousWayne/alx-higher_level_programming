@@ -1,23 +1,20 @@
 #!/usr/bin/node
 const request = require('request');
+const url = process.argv[2];
 
-const url = process.argv[2] || '';
-const storage = {};
-let tmp = '';
+request(url, (err, resp, body) => {
+  if (err) { console.log(err); }
 
-request(url, (err, res, body) => {
-  if (err) {
-    return console.log(err);
-  }
-
-  const parsedBody = JSON.parse(body);
-
-  for (let i = 0; i < parsedBody.length; i++) {
-    tmp = parsedBody[i].userId;
-    if (parsedBody[i].completed) {
-      storage[tmp] = (storage[tmp] || 0) + 1;
+  const completed = {};
+  const jsonBody = JSON.parse(body);
+  for (const task of jsonBody) {
+    if (task.completed) {
+      if (completed[task.userId]) {
+        completed[task.userId]++;
+      } else {
+        completed[task.userId] = 1;
+      }
     }
   }
-
-  console.log(storage);
+  console.log(completed);
 });
